@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
+import TodoItem from './components/TodoItem';
+import List from './components/List';
 
-function TodoItem(props) {
-	return <li
-		className={`todo-item ${props.completed ? "completed" : ""}`}
-		onClick={() => props.onToggle(props.id)}>
-		{props.text}</li>
-}
 
 export default function App() {
 	const [todos, setTodos] = useState(() => {
@@ -17,26 +10,57 @@ export default function App() {
 		return loadTodos;
 	});
 	const [inputValue, setInputValue] = useState("");
+	const [error, setError] = useState("");
+	const maxLength = 50;
 
 	useEffect(() => {
-		console.log("state changed")
+		console.log("state changed");
 		localStorage.setItem("todos", JSON.stringify(todos));
 	}, [todos])
 
+	useEffect(() => {
+		console.log(error);
+		localStorage.setItem("error", error);
+	}, [error]);
+
 	function handleChange(event) {
-		setInputValue(event.target.value);
+		const value = event.target.value;
+
+		setInputValue(value);
+
+		if (event.target.value.length > maxLength) {
+			setError(`Item cannot be longer than ${maxLength} symbols.`)
+		} else {
+			setInputValue(event.target.value);
+		}
 	}
 
 	function handleAdd(event) {
+		event.preventDefault();
+
 		console.log("button clicked")
-		setTodos([...todos,
-		{
-			id: crypto.randomUUID(),
-			text: inputValue,
-			completed: false
+
+		const trimmedInput = inputValue.trim();
+		if (!trimmedInput) {
+			setError('Text cannot be empty');
+			localStorage.setItem("error", error), [error];
+			return;
 		}
-		]);
-		setInputValue("");
+
+		if (trimmedInput.length > maxLength) {
+			setError(`Item cannot be longer than ${maxLength} symbols.`)
+			localStorage.setItem("error", error), [error];
+		} else {
+			setTodos([...todos,
+			{
+				id: crypto.randomUUID(),
+				text: inputValue,
+				completed: false
+			}
+			]);
+			setError('');
+			setInputValue("");
+		}
 	}
 	function handleToggle(id) {
 		console.log("toggle", id);
@@ -51,20 +75,13 @@ export default function App() {
 	}
 
 	return (
-		<div>
-			<ul>
-				{todos.map(todo => (
-					<TodoItem
-						key={todo.id}
-						id={todo.id}
-						text={todo.text}
-						completed={todo.completed}
-						onToggle={handleToggle}
-					/>
-				))}
-			</ul>
+		<form onSubmit={handleAdd}>
+			<List listItems={todos} onToggle={handleToggle}></List>
+			<p id="form-error" role="alert">
+				{error}
+			</p>
 			<input value={inputValue} onChange={handleChange} />
-			<button onClick={handleAdd}>Add</button>
-		</div>
+			<button type="submit">Add</button>
+		</form>
 	);
 }

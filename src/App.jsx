@@ -2,86 +2,102 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import TodoItem from './components/TodoItem';
 import List from './components/List';
+import CreateListForm from './components/CreateListForm';
 
 
 export default function App() {
-	const [todos, setTodos] = useState(() => {
-		const loadTodos = JSON.parse(localStorage.getItem("todos") || "[]");
-		return loadTodos;
-	});
+	const [lists, setLists] = useState(() => {
+		const loadLists = JSON.parse(localStorage.getItem("lists") || "[]");
+		return loadLists;
+	})
 	const [inputValue, setInputValue] = useState("");
 	const [error, setError] = useState("");
 	const maxLength = 50;
 
+	const tempTitle = "test title";
+
 	useEffect(() => {
 		console.log("state changed");
-		localStorage.setItem("todos", JSON.stringify(todos));
-	}, [todos])
+		localStorage.setItem("lists", JSON.stringify(lists));
+	}, [lists])
 
+	//todo: rework error <p> to show above relevant input field
 	useEffect(() => {
 		console.log(error);
 		localStorage.setItem("error", error);
 	}, [error]);
 
-	function handleChange(event) {
-		const value = event.target.value;
+	function handleCreateList(title) {
+		console.log("created list: ", title);
 
-		setInputValue(value);
-
-		if (event.target.value.length > maxLength) {
-			setError(`Item cannot be longer than ${maxLength} symbols.`)
-		} else {
-			setInputValue(event.target.value);
-		}
+		setLists(prev => [
+			...prev,
+			{
+				id: crypto.randomUUID(),
+				title,
+				todos: []
+			}
+		]);
 	}
 
-	function handleAdd(event) {
-		event.preventDefault();
+	function handleChange(value, listId) {
+		setLists(prev => prev.map(list => list.id === listId
+			? { ...list, inputValue: value }
+			: list
+		)
+		);
+	}
 
-		console.log("button clicked")
-
-		const trimmedInput = inputValue.trim();
-		if (!trimmedInput) {
-			setError('Text cannot be empty');
-			localStorage.setItem("error", error), [error];
+	function handleAdd(text, listId) {
+		if (!text.trim()) {
 			return;
 		}
 
-		if (trimmedInput.length > maxLength) {
-			setError(`Item cannot be longer than ${maxLength} symbols.`)
-			localStorage.setItem("error", error), [error];
-		} else {
-			setTodos([...todos,
+		setLists(prev => prev.map(list => list.id === listId ? {
+			...list,
+			todos: [...list.todos,
 			{
 				id: crypto.randomUUID(),
-				text: inputValue,
+				text,
 				completed: false
 			}
-			]);
-			setError('');
-			setInputValue("");
-		}
+			]
+		} : list
+		)
+		);
 	}
-	function handleToggle(id) {
-		console.log("toggle", id);
-
-		setTodos(
-			todos.map(todo =>
-				todo.id === id
-					? { ...todo, completed: !todo.completed }
-					: todo
+	function handleToggle(listId, todoId) {
+		setLists(prev =>
+			prev.map(list =>
+				list.id === listId
+					? {
+						...list,
+						todos: list.todos.map(todo =>
+							todo.id === todoId
+								? { ...todo, completed: !todo.completed }
+								: todo
+						)
+					}
+					: list
 			)
 		);
 	}
 
 	return (
-		<form onSubmit={handleAdd}>
-			<List listItems={todos} onToggle={handleToggle}></List>
-			<p id="form-error" role="alert">
-				{error}
-			</p>
-			<input value={inputValue} onChange={handleChange} />
-			<button type="submit">Add</button>
-		</form>
+		<div>
+			<CreateListForm onCreateList={handleCreateList} />
+
+			{lists.map(list => {
+				return (
+					<List key={list.id}
+						id={list.id}
+						title={list.title}
+						listItems={list.todos}
+						onListItemChange={(event) => handleChange(event, list.id)}
+						onListItemAdd={handleAdd}
+						onListItemToggle={(todoId) => handleToggle(list.id, todoId)}
+					/>)
+			})}
+		</div>
 	);
 }

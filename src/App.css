@@ -1,3 +1,7 @@
+.list-title{
+	font-style: italic;
+}
+
 .todo-item {
 	cursor: pointer;
 }

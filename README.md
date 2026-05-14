@@ -29,4 +29,4 @@ This project is very early stage prototype focused on relearning React and also 
 - Highlighting the next uncompleted task in a "main" list that takes center stage.
 - Improving list organization and structure for scalability.
 - Styling/themes.
-- Optionahl authentication (Google login)
+- Optional authentication (Google login).

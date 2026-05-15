@@ -10,6 +10,10 @@
 	text-decoration: line-through;
 }
 
-#form-error{
+.form-error{
 	color: red;
+}
+
+.form-success{
+	color: green;
 }

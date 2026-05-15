@@ -82,10 +82,14 @@ export default function App() {
 			)
 		);
 	}
+	function __clearStorage(){
+		setLists([]);
+		localStorage.setItem("lists", []);
+	}
 
 	return (
 		<div>
-			<CreateListForm onCreateList={handleCreateList} />
+			<CreateListForm onCreateList={handleCreateList} maxLength={maxLength}/>
 
 			{lists.map(list => {
 				return (
@@ -96,8 +100,11 @@ export default function App() {
 						onListItemChange={(event) => handleChange(event, list.id)}
 						onListItemAdd={handleAdd}
 						onListItemToggle={(todoId) => handleToggle(list.id, todoId)}
+						maxLength={maxLength}
 					/>)
 			})}
+
+			<button onClick={__clearStorage}>__clearStorage()</button>
 		</div>
 	);
 }

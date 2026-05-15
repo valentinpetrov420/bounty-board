@@ -1,20 +1,43 @@
 import { useState } from "react"
+import StatusMessage from "./StatusMessage";
 
-export default function CreateListForm(props){
+export default function CreateListForm(props) {
     const [title, setTitle] = useState("");
+    const [status, setStatus] = useState({});
 
-    function handleSubmit(event){
+    function handleSubmit(event) {
         event.preventDefault();
 
-        props.onCreateList(title);
+        const inputValue = title;
 
-        setTitle("")
+        if (!inputValue.trim()) {
+            setStatus({
+                type: "error",
+                text: "Text field cannot be empty."
+            })
+            return;
+        } else if (inputValue.trim().length > props.maxLength) {
+            setStatus({
+                type: "error",
+                text: `Cannot be more than ${props.maxLength} symbols long.`
+            })
+            return;
+        } else {
+            props.onCreateList(title);
+            setStatus({
+                type: "success",
+                text: "Success."
+            })
+            setTitle("");
+        }
     }
 
     return <form onSubmit={handleSubmit}>
+
+        <StatusMessage type={status.type} text={status.text}></StatusMessage>
         <input value={title}
-        onChange={(event) => {setTitle(event.target.value)}}
-        placeholder="Enter List Name"></input>
+            onChange={(event) => { setTitle(event.target.value) }}
+            placeholder="Enter List Name"></input>
         <button type="submit">Create New List</button>
     </form>
 }

@@ -16,7 +16,7 @@ It focuses on simplicity and minimalism. Fast task entry and tracking without ov
 ## How to run it locally
 
 ```
-git clone https://github.com/your-username/questlog.git
+git clone https://github.com/valentinpetrov420/questlog.git
 cd questlog
 npm install
 npm run dev

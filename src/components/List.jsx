@@ -7,13 +7,16 @@ export default function List(props) {
     function handleSubmit(e) {
         e.preventDefault();
 
-        props.onListItemAdd(props.id, value);
-
+        //todo: add validation checks to onListItemAdd()
+        props.onListItemAdd(value, props.id);
         setValue("");
     }
 
     return (
         <div className="list-component">
+            <div className="list-tools">
+                <a onClick={props.onListDelete}>🗑️</a>
+            </div>
             <h2 className="list-title">Title: <span>{props.title}</span></h2>
             <ul>
                 {props.listItems.map(todo => (
@@ -27,11 +30,7 @@ export default function List(props) {
                 ))}
             </ul>
 
-            <form className="list-form" onSubmit={(e) => {
-                e.preventDefault();
-                props.onListItemAdd(value, props.id);
-                setValue("");
-            }}>
+            <form className="list-form" onSubmit={handleSubmit}>
                 <input
                     placeholder="New quest task..."
                     value={value}

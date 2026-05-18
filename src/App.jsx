@@ -20,6 +20,20 @@ export default function App() {
 	const siteName = "QuestLog";
 
 	useEffect(() => {
+		const cached = localStorage.getItem("changelog");
+
+		if (cached) {
+			return;
+		};
+
+		fetch("/changelog.json")
+			.then((res) => res.json())
+			.then((data) => {
+				localStorage.setItem("changelog", JSON.stringify(data));
+			});
+	}, []);
+
+	useEffect(() => {
 		console.log("state changed");
 		localStorage.setItem("lists", JSON.stringify(lists));
 	}, [lists])
@@ -30,6 +44,9 @@ export default function App() {
 	//	localStorage.setItem("error", error);
 	//}, [error]);
 
+	function loadCommitHistory() {
+
+	}
 	function toggleDarkMode() {
 		if (theme === "darkMode") {
 			setTheme("lightMode");

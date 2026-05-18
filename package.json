@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "generate:changelog": "node scripts/generateChangelog.js",
+    "build": "npm run generate:changelog && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

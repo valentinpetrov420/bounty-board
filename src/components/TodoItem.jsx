@@ -16,7 +16,10 @@ export default function TodoItem(props) {
         setDraftTitleTodo(props.text);
     }
     function handleDeleteTodo() {
+        console.log("sending upward: " + props.text);
 
+        //todo: add confirmation
+        props.onTodoDelete(props.listId, props.id);
     }
 
     return <li className="todo-wrapper">

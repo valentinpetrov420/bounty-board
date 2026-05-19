@@ -109,9 +109,21 @@ export default function App() {
 			)
 		)
 	}
+	function handleTodoDelete(listId, todoId) {
+		console.log("received: " + todoId);
 
-	function handleTodoDelete() {
-
+		setLists(prev =>
+			prev.map(list => {
+				if (list.id !== listId) {
+					return list
+				} else {
+					return {
+						...list,
+						todos: list.todos.filter(todo => todo.id !== todoId)
+					};
+				}
+			})
+		);
 	};
 	function handleAdd(text, listId) {
 		if (!text.trim()) {
@@ -180,6 +192,7 @@ export default function App() {
 										onListItemChange={(event) => handleChange(event, list.id)}
 										onListItemAdd={handleAdd}
 										onListItemEdit={handleTodoEdit}
+										onListItemDelete={handleTodoDelete}
 										onListItemToggle={(todoId) => handleToggle(list.id, todoId)}
 										onListTitleChange={handleEditListTitle}
 										onListDelete={(event) => handleDeleteList(list.id, list.title)}

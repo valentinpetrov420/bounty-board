@@ -35,7 +35,7 @@ export default function List(props) {
                 <a onClick={props.onListDelete}>🗑️</a>
             </div>
             {isEditing ? <form className="edit-list-title" onSubmit={handleSubmitEdit}> <h2 className="list-title-edit">Title:</h2> <input value={draftTitle} onChange={(event) => setDraftTitle(event.target.value)}></input></form> :
-                        <h2 className="list-title">Title: <span onClick={handleEditTitle}>{props.title}<a>✎</a></span></h2>}
+                <h2 className="list-title">Title: <span onClick={handleEditTitle}>{props.title}<a>✎</a></span></h2>}
             <ul>
                 {props.listItems.map(todo => (
                     <TodoItem
@@ -46,6 +46,7 @@ export default function List(props) {
                         completed={todo.completed}
                         onToggle={props.onListItemToggle}
                         onTodoEdit={props.onListItemEdit}
+                        onTodoDelete={props.onListItemDelete}
                     />
                 ))}
             </ul>

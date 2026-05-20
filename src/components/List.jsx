@@ -14,18 +14,6 @@ export default function List(props) {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (!titleStatus) {
-            return;
-        };
-
-        const timeout = setTimeout(() => {
-            setTitleStatus(null);
-        }, 3000);
-
-        return () => clearTimeout(timeout);
-    }, [titleStatus]);
-
-    useEffect(() => {
         if (!addTodoStatus) {
             return;
         };
@@ -65,12 +53,12 @@ export default function List(props) {
         if (!result.valid) {
             setError(result.error);
             setTitleStatus(true);
-            return;
+            setDraftTitle(props.title);
+        } else {
+            setError("");
+            props.onListTitleChange(props.id, draftTitle);
+            setEditing(false);
         }
-
-        setError("");
-        props.onListTitleChange(props.id, draftTitle);
-        setEditing(false);
     }
 
     return (
